@@ -197,6 +197,7 @@ export const executeSwapRoute: FastifyPluginAsync = async (fastify) => {
           routerAddress,
           quote.inputToken.decimals,
         );
+        logger.info('QUOTE', quote);
 
         const amountNeeded =
           side === 'SELL' ? quote.rawAmountIn : quote.rawMaxAmountIn;
@@ -236,17 +237,12 @@ export const executeSwapRoute: FastifyPluginAsync = async (fastify) => {
 
         // Use provided gas parameters or defaults
         const gasLimit = computeUnits || 300000;
-        
-        // For Ethereum, priorityFeePerCU is interpreted as gas price in Gwei
-        let txOptions: any = { gasLimit };
-        
-        if (priorityFeePerCU !== undefined) {
-          // Convert from Gwei to Wei (1 Gwei = 1e9 Wei)
-          const gasPriceWei = BigNumber.from(priorityFeePerCU).mul(1e9);
-          txOptions.gasPrice = gasPriceWei;
-          logger.info(`Using custom gas price: ${priorityFeePerCU} Gwei`);
-        }
-        
+
+        const txOptions = await ethereum.prepareGasOptions(
+          priorityFeePerCU,
+          gasLimit,
+        );
+        logger.info('Tx options', txOptions);
         logger.info(`Using gas limit: ${gasLimit}`);
 
         let tx;
