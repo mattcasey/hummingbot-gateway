@@ -197,7 +197,7 @@ export const executeSwapRoute: FastifyPluginAsync = async (fastify) => {
           routerAddress,
           quote.inputToken.decimals,
         );
-        logger.info('QUOTE', quote);
+        // logger.info('QUOTE', quote);
 
         const amountNeeded =
           side === 'SELL' ? quote.rawAmountIn : quote.rawMaxAmountIn;

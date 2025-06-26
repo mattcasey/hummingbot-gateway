@@ -32,6 +32,7 @@ export async function approveEthereumToken(
   token: string,
   amount?: string,
 ) {
+  
   const ethereum = await Ethereum.getInstance(network);
   await ethereum.init();
 
